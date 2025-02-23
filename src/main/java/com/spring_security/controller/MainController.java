@@ -7,8 +7,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/api")
 public class MainController {
-    @GetMapping("")
-    public String getHome(){
+//    @GetMapping("")
+//    public String getIndexPage(){
+//        return "index";
+//    }
+
+    @GetMapping("/home")
+    public String getHomePage(){
         return "home";
     }
+    @GetMapping("/profile")
+    public String getProfilePage(){
+        return "profile";
+    }
+
+    @GetMapping("/manager")
+    public String getManagerPage(){
+        return "manager";
+    }
+
+    @GetMapping("/admin")
+    public String getAdminPage(){
+        return "admin";
+    }
 }
+
