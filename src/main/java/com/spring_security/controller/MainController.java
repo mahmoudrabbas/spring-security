@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/api")
 public class MainController {
-//    @GetMapping("")
-//    public String getIndexPage(){
-//        return "index";
-//    }
+
 
     @GetMapping("/home")
     public String getHomePage(){
@@ -29,6 +26,16 @@ public class MainController {
     @GetMapping("/admin")
     public String getAdminPage(){
         return "admin";
+    }
+
+    @GetMapping("/client")
+    public String getClientPage(){
+        return "client";
+    }
+
+    @GetMapping("/client2")
+    public String getClient2Page(){
+        return "client2";
     }
 }
 

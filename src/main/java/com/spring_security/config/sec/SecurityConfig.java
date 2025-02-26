@@ -23,11 +23,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/", "/api/home").permitAll()
                                 .requestMatchers("/api/manager").hasRole("MANAGER")
                                 .requestMatchers("/api/admin").hasRole("ADMIN")
-                                .requestMatchers("/api/profile").authenticated()
+                                .requestMatchers("api/profile").authenticated()
+                                .requestMatchers("/api/client1").hasAuthority("CLIENT")
+                                .requestMatchers("/api/client2").hasRole("CLIENT")
                                 .requestMatchers("/basic1").hasAuthority("ACCESS_BASIC1")
                                 .requestMatchers("/basic1").hasAuthority("ACCESS_BASIC1")
                 )
@@ -41,10 +44,11 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         UserDetails user = User.withUsername("user").password(encoder().encode("user1234")).roles("USER").authorities("ACCESS_BASIC1").build();
-        UserDetails admin = User.withUsername("admin").password(encoder().encode("admin1234")).roles("ADMIN").authorities("ACCESS_BASIC2").build();
+        UserDetails admin = User.withUsername("admin").password(encoder().encode("admin1234")).roles("ADMIN").build();
         UserDetails manger = User.withUsername("manager").password(encoder().encode("manager1234")).roles("MANAGER").build();
+        UserDetails client = User.withUsername("client").password(encoder().encode("client1234")).roles("CLIENT").authorities("CLIENT").build();
 
-        return new InMemoryUserDetailsManager(user, admin, manger);
+        return new InMemoryUserDetailsManager(user, admin, manger, client);
     }
 
     @Bean
