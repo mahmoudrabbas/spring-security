@@ -36,7 +36,7 @@ public class SecurityConfig {
         httpSecurity
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/", "/api/home").permitAll()
+                                .requestMatchers("/", "/api/home", "login").permitAll()
                                 .requestMatchers("/api/manager").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/admin").hasRole("ADMIN")
                                 .requestMatchers("api/profile").authenticated()
@@ -45,8 +45,8 @@ public class SecurityConfig {
                                 .requestMatchers("/basic1").hasAuthority("ROLE_USER")
                                 .requestMatchers("/basic2").hasRole("USER")
                 )
-                .formLogin(Customizer.withDefaults())
-                .logout(Customizer.withDefaults());
+                .formLogin()
+                .loginPage("/login");
 
         return httpSecurity.build();
 

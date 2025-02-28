@@ -11,8 +11,12 @@ public class MainController {
 
     @GetMapping("/home")
     public String getHomePage(){
+        System.out.println("gggggggggggg1");
+
         return "home";
     }
+
+
     @GetMapping("/profile")
     public String getProfilePage(){
         return "profile";
