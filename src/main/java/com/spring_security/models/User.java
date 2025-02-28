@@ -3,6 +3,7 @@ package com.spring_security.models;
 import jakarta.persistence.*;
 import org.springframework.data.repository.cdi.Eager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,13 +16,13 @@ public class User {
     private String username;
     private String password;
     private int active;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name="role_id")}
-    )
-    private List<Role> roles;
+
+    public User() {
+    }
+
+
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -29,8 +30,15 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name="authority_id")}
     )
-    private List<Authority> authorities;
+    private List<Authority> authorities = new ArrayList<>();
 
+
+    public User(String name, String username, String password, int active) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.active = active;
+    }
     public Long getId() {
         return id;
     }
@@ -71,13 +79,7 @@ public class User {
         this.active = active;
     }
 
-    public List<Role> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
 
     public List<Authority> getAuthorities() {
         return authorities;

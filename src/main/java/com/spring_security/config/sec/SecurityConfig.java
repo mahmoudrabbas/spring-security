@@ -2,8 +2,12 @@ package com.spring_security.config.sec;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +24,13 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -29,10 +40,10 @@ public class SecurityConfig {
                                 .requestMatchers("/api/manager").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/admin").hasRole("ADMIN")
                                 .requestMatchers("api/profile").authenticated()
-                                .requestMatchers("/api/client").hasAuthority("ROLE_CLIENT")
-                                .requestMatchers("/api/client2").hasRole("CLIENT")
-                                .requestMatchers("/basic1").hasAuthority("ACCESS_BASIC1")
-                                .requestMatchers("/basic1").hasAuthority("ACCESS_BASIC1")
+                                .requestMatchers("/api/client").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/api/client2").hasRole("ADMIN")
+                                .requestMatchers("/basic1").hasAuthority("ROLE_USER")
+                                .requestMatchers("/basic2").hasRole("USER")
                 )
                 .formLogin(Customizer.withDefaults())
                 .logout(Customizer.withDefaults());
@@ -42,13 +53,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails user = User.withUsername("user").password(encoder().encode("user1234")).roles("USER").authorities("ACCESS_BASIC1").build();
-        UserDetails admin = User.withUsername("admin").password(encoder().encode("admin1234")).roles("ADMIN").build();
-        UserDetails manger = User.withUsername("manager").password(encoder().encode("manager1234")).roles("MANAGER").build();
-        UserDetails client = User.withUsername("client").password(encoder().encode("client1234")).authorities("ROLE_CLIENT").build();
+    public AuthenticationManager authenticationManager(DaoAuthenticationProvider daoAuthenticationProvider) {
+        return new ProviderManager(daoAuthenticationProvider);
+    }
 
-        return new InMemoryUserDetailsManager(user, admin, manger, client);
+    @Bean
+    DaoAuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(encoder());
+        daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
+        return daoAuthenticationProvider;
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.spring_security.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "authority")
@@ -11,8 +12,15 @@ public class Authority {
     private Long id;
     private String authority;
 
+    public Authority() {
+    }
+
+    public Authority(String authority) {
+        this.authority = authority;
+    }
+
     @ManyToMany(mappedBy = "authorities")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Long getId() {
         return id;
