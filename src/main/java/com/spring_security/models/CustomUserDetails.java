@@ -13,7 +13,6 @@ public class CustomUserDetails implements UserDetails {
 
     User user;
 
-    @Autowired
     public CustomUserDetails(User user) {
         this.user = user;
     }
@@ -39,20 +38,23 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return user.getUsername();
     }
+    public String getName() {
+        return user.getName();
+    }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override

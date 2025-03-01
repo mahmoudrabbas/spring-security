@@ -12,6 +12,6 @@ public class BasicController {
 
     @GetMapping("/basic2")
     public String basic2(){
-        return "Hello from Basic 2";
+        return "Hello from Basic 2"; 
     }
 }

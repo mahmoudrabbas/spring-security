@@ -36,7 +36,7 @@ public class SecurityConfig {
         httpSecurity
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/", "/api/home", "login").permitAll()
+                        .requestMatchers("/", "/api/home", "/sign-in", "/css/**", "/js/**", "/test").permitAll() // Public routes
                                 .requestMatchers("/api/manager").hasAnyRole("MANAGER", "ADMIN")
                                 .requestMatchers("/api/admin").hasRole("ADMIN")
                                 .requestMatchers("api/profile").authenticated()
@@ -45,9 +45,25 @@ public class SecurityConfig {
                                 .requestMatchers("/basic1").hasAuthority("ROLE_USER")
                                 .requestMatchers("/basic2").hasRole("USER")
                 )
-                .formLogin()
-                .loginPage("/login");
+                .formLogin(form -> form
+                        .loginPage("/sign-in")
+                        .loginProcessingUrl("/sign-in")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+//                .loginProcessingUrl("/sign-in")
+//                .loginPage("/sign-in")
+//                .permitAll();
 
+                .logout(logout -> logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/sign-in?logout") // Redirect after logout
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID")
+                                .permitAll()
+
+                        )
+                .csrf(csrf -> csrf.disable());
         return httpSecurity.build();
 
     }
